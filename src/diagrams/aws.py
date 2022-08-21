@@ -1,17 +1,17 @@
 from diagrams import Cluster, Diagram
-from diagrams.aws.compute import ECS
+from diagrams.aws.compute import EC2Instance
 from diagrams.aws.database import RDS
 from diagrams.aws.network import ELB, Route53
 
-with Diagram("Biller Development", show=False):
-    development_dns = Route53("biller-development.estoca.com.br")
-    development_lb = ELB("lb-biller-development")
+with Diagram("Web Application", show=False):
+    dns = Route53("web.application.com.br")
+    load_balancer = ELB("lb-1")
 
     with Cluster("Application"):
-        application_group = [ECS("biller-development-1")]
+        application_group = [EC2Instance("ec2-1"), EC2Instance("ec2-2"), EC2Instance("ec2-3")]
 
     with Cluster("Database"):
-        development_db = RDS("biller-development")
+        database = RDS("db-1")
 
-    development_dns >> development_lb >> application_group
-    application_group >> development_db
+    dns >> load_balancer >> application_group
+    application_group >> database
